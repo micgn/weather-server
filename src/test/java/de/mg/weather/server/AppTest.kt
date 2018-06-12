@@ -1,0 +1,22 @@
+package de.mg.weather.server
+
+
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.junit4.SpringRunner
+
+
+@RunWith(SpringRunner::class)
+@SpringBootTest
+@ActiveProfiles("test")
+class AppTest {
+
+
+    @Test
+    @Throws(Exception::class)
+    fun contextLoads() {
+
+    }
+}
