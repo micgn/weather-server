@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class WeatherConfig {
 
-    @Value("\${mqtt.broker.url}")
+    @Value("\${listener.broker.url}")
     var mqttBrokerUrl: String = ""
 
 
