@@ -7,10 +7,10 @@ import javax.persistence.Table
 
 @Entity
 @Table
-class SensorValue {
+class SensorValueEntity {
 
     @EmbeddedId
-    var id: SensorValueId? = null
+    var id: SensorValueIdEntity? = null
 
 
     @Column(nullable = false)

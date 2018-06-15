@@ -1,17 +1,17 @@
 package de.mg.weather.server.service
 
-import de.mg.weather.server.db.SensorEnum.TEMPERATURE_1
 import de.mg.weather.server.model.SensorData
 import de.mg.weather.server.model.SensorDataEntry
+import de.mg.weather.server.model.SensorEnum.TEMPERATURE_1
 import de.mg.weather.server.model.SensorTypeData
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime
 
-class ScheduledTaskTest {
+class CreateSensorDataEntriesTaskTest {
 
-    private val sut = ScheduledTask()
+    private val sut = CreateSensorDataEntriesTask()
 
     @Before
     fun init() {
@@ -48,7 +48,8 @@ class ScheduledTaskTest {
         sut.addNormalizedValuesToNotEmptyList(
                 lastNormalizedEntry = SensorDataEntry(time(0), 10f),
                 lastReceived = lastReceived,
-                sensorTypeData = sensorTypeData)
+                sensorTypeData = sensorTypeData,
+                type = TEMPERATURE_1)
 
         assertNotNull(sensorTypeData.lastReceived.get())
         assertEquals(0, sensorTypeData.values.size)
@@ -64,7 +65,8 @@ class ScheduledTaskTest {
         sut.addNormalizedValuesToNotEmptyList(
                 lastNormalizedEntry = SensorDataEntry(time(0), 0f),
                 lastReceived = lastReceived,
-                sensorTypeData = sensorTypeData)
+                sensorTypeData = sensorTypeData,
+                type = TEMPERATURE_1)
 
         assertNull(sensorTypeData.lastReceived.get())
         assertEquals(1, sensorTypeData.values.size)
@@ -82,7 +84,8 @@ class ScheduledTaskTest {
         sut.addNormalizedValuesToNotEmptyList(
                 lastNormalizedEntry = SensorDataEntry(time(0), 10f),
                 lastReceived = lastReceived,
-                sensorTypeData = sensorTypeData)
+                sensorTypeData = sensorTypeData,
+                type = TEMPERATURE_1)
 
         assertNull(sensorTypeData.lastReceived.get())
         assertEquals(3, sensorTypeData.values.size)

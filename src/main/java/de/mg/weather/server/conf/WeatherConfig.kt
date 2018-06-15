@@ -1,13 +1,13 @@
 package de.mg.weather.server.conf
 
-import de.mg.weather.server.db.SensorEnum
+import de.mg.weather.server.model.SensorEnum
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 open class WeatherConfig {
 
-    @Value("\${listener.broker.url}")
+    @Value("\${mqtt.broker.url}")
     var mqttBrokerUrl: String = ""
 
 
@@ -15,5 +15,7 @@ open class WeatherConfig {
             "t2" to SensorEnum.TEMPERATURE_2,
             "p" to SensorEnum.PRESSURE,
             "h" to SensorEnum.HUMIDITY)
+
+    val hoursToShow = 48
 
 }

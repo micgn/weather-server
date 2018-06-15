@@ -1,4 +1,4 @@
-package de.mg.weather.server.db
+package de.mg.weather.server.model
 
 enum class SensorEnum {
 

@@ -1,9 +1,9 @@
 package de.mg.weather.server.listener
 
 import de.mg.weather.server.conf.WeatherConfig
-import de.mg.weather.server.db.SensorEnum.*
 import de.mg.weather.server.model.SensorData
 import de.mg.weather.server.model.SensorDataEntry
+import de.mg.weather.server.model.SensorEnum.*
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttClient

@@ -1,6 +1,6 @@
 package de.mg.weather.server.model
 
-import de.mg.weather.server.db.SensorEnum.*
+import de.mg.weather.server.model.SensorEnum.*
 import org.springframework.stereotype.Component
 
 @Component

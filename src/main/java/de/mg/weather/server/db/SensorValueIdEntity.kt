@@ -1,11 +1,12 @@
 package de.mg.weather.server.db
 
+import de.mg.weather.server.model.SensorEnum
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Embeddable
 
 @Embeddable
-class SensorValueId : Serializable {
+class SensorValueIdEntity : Serializable {
 
 
     @Column(nullable = false)
