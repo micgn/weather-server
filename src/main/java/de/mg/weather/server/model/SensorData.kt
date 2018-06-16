@@ -4,7 +4,7 @@ import de.mg.weather.server.model.SensorEnum.*
 import org.springframework.stereotype.Component
 
 @Component
-class SensorData {
+open class SensorData {
 
     val sensorTimeDistanceMinutes = 2L
 

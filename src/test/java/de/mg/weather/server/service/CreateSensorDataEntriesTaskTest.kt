@@ -1,5 +1,7 @@
 package de.mg.weather.server.service
 
+import de.mg.weather.server.conf.WeatherConfig
+import de.mg.weather.server.db.SensorValueRepo
 import de.mg.weather.server.model.SensorData
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum.TEMPERATURE_1
@@ -7,11 +9,23 @@ import de.mg.weather.server.model.SensorTypeData
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 import java.time.LocalDateTime
 
-class CreateSensorDataEntriesTaskTest {
+@RunWith(MockitoJUnitRunner::class)
+open class CreateSensorDataEntriesTaskTest {
 
-    private val sut = CreateSensorDataEntriesTask()
+    @InjectMocks
+    private lateinit var sut: CreateSensorDataEntriesTask
+
+    @Mock
+    private lateinit var config: WeatherConfig
+
+    @Mock
+    private lateinit var repo: SensorValueRepo
 
     @Before
     fun init() {

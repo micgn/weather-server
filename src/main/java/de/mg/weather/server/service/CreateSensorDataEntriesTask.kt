@@ -42,12 +42,15 @@ class CreateSensorDataEntriesTask {
         val lastReceived = sensorData.lastReceived.get() ?: return
 
         val lastNormalized = sensorData.values.last()
-        if (lastNormalized == null)
+        if (lastNormalized == null || lastNormalizesTooOld(lastNormalized.time, lastReceived.time))
+        // TODO add in correct distance!!
             addNormalizedEntryToEmptyList(lastReceived, sensorData, type)
         else
             addNormalizedValuesToNotEmptyList(lastNormalized, lastReceived, sensorData, type)
-
     }
+
+    private fun lastNormalizesTooOld(lastNormalized: LocalDateTime, lastReceived: LocalDateTime) =
+            (epoch(lastReceived) - epoch(lastNormalized)) / 1000 / 60 > data.sensorTimeDistanceMinutes * 2
 
     private fun addNormalizedEntryToEmptyList(lastReceived: SensorDataEntry, sensorTypeData: SensorTypeData, type: SensorEnum) {
 
