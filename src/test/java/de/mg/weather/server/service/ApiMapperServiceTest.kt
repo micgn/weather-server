@@ -1,4 +1,4 @@
-package de.mg.weather.server.api
+package de.mg.weather.server.service
 
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
@@ -8,9 +8,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.LocalDateTime
 
-class RestControllerTest {
+class ApiMapperServiceTest {
 
-    private val sut = RestController()
+    private val sut = ApiMapperService()
 
     @Test
     fun currentValues() {
@@ -19,7 +19,7 @@ class RestControllerTest {
         sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.lastReceived.set(SensorDataEntry(time(0), 1f))
         sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_2]!!.lastReceived.set(SensorDataEntry(time(1), 2f))
 
-        val result = sut.data().current
+        val result = sut.currentValuesMap()
         assertThat(result[SensorEnum.TEMPERATURE_1]!!.value).isEqualTo(1f)
         assertThat(result[SensorEnum.TEMPERATURE_2]!!.value).isEqualTo(2f)
         assertThat(result[SensorEnum.PRESSURE]).isNull()
@@ -29,7 +29,7 @@ class RestControllerTest {
     fun valuesEmpty() {
 
         sut.sensorDataContainer = SensorDataContainer()
-        assertThat(sut.data().data).isEmpty()
+        assertThat(sut.dataList()).isEmpty()
     }
 
     @Test
@@ -44,7 +44,7 @@ class RestControllerTest {
 
         sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.values.addAll(values)
 
-        val result = sut.data().data
+        val result = sut.dataList()
         assertThat(result).hasSize(3)
         assertThat(result[0]).hasSize(SensorEnum.values().size + 1)
 
@@ -72,7 +72,7 @@ class RestControllerTest {
 
         sut.sensorDataContainer.sensorsMap[SensorEnum.HUMIDITY]!!.values.addAll(humiValues)
 
-        val result = sut.data().data
+        val result = sut.dataList()
         assertThat(result).hasSize(3)
         assertThat(result[0]).hasSize(SensorEnum.values().size + 1)
 
