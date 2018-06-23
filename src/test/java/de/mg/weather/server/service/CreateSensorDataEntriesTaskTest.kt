@@ -6,6 +6,7 @@ import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum.TEMPERATURE_1
 import de.mg.weather.server.model.SensorTypeData
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.time.LocalDateTime
+import java.util.*
+
 
 @RunWith(MockitoJUnitRunner::class)
 open class CreateSensorDataEntriesTaskTest {
@@ -105,6 +108,44 @@ open class CreateSensorDataEntriesTaskTest {
         assertEquals(3, sensorTypeData.values.size)
         assertEquals(2, sensorTypeData.values.first.time.minute)
         assertEquals(6, sensorTypeData.values.last.time.minute)
+    }
+
+
+    @Test
+    fun normalizeTimestamp() {
+
+        val tz = TimeZone.getDefault()
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
+        var time = LocalDateTime.of(1970, 1, 1, 0, 0, 0)
+        var result = sut.normalizeTimestamp(time, 1)
+        assertThat(result).isEqualTo(time)
+
+        time = LocalDateTime.of(1970, 1, 1, 0, 1, 30)
+        result = sut.normalizeTimestamp(time, 1)
+        assertThat(result).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 1, 0))
+
+        time = LocalDateTime.of(1970, 1, 1, 0, 1, 30)
+        result = sut.normalizeTimestamp(time, 2)
+        assertThat(result).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 0, 0))
+
+        time = LocalDateTime.of(1970, 1, 1, 0, 3, 0)
+        result = sut.normalizeTimestamp(time, 2)
+        assertThat(result).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 2, 0))
+
+        time = LocalDateTime.of(1970, 1, 1, 0, 4, 30)
+        result = sut.normalizeTimestamp(time, 2)
+        assertThat(result).isEqualTo(LocalDateTime.of(1970, 1, 1, 0, 4, 0))
+
+        time = LocalDateTime.of(2018, 6, 23, 11, 15, 30)
+        result = sut.normalizeTimestamp(time, 2)
+        assertThat(result).isEqualTo(LocalDateTime.of(2018, 6, 23, 11, 14, 0))
+
+        time = LocalDateTime.of(2018, 6, 23, 11, 10, 30)
+        result = sut.normalizeTimestamp(time, 3)
+        assertThat(result).isEqualTo(LocalDateTime.of(2018, 6, 23, 11, 9, 0))
+
+        TimeZone.setDefault(tz)
     }
 
 

@@ -8,6 +8,7 @@ import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum
 import de.mg.weather.server.model.SensorTypeData
+import de.mg.weather.server.service.Utils.dateTime
 import de.mg.weather.server.service.Utils.epoch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
@@ -43,22 +44,31 @@ class CreateSensorDataEntriesTask {
         val lastReceived = sensorData.lastReceived.get() ?: return
 
         val lastNormalized = sensorData.values.last()
-        if (lastNormalized == null || isLastNormalizesTooOld(lastNormalized.time, lastReceived.time))
-        // TODO add in correct distance!!
+        if (lastNormalized == null || isLastNormalizedTimeTooOld(lastNormalized.time, lastReceived.time))
             addNormalizedEntryToEmptyList(lastReceived, sensorData, type)
         else
             addNormalizedValuesToNotEmptyList(lastNormalized, lastReceived, sensorData, type)
     }
 
-    private fun isLastNormalizesTooOld(lastNormalized: LocalDateTime, lastReceived: LocalDateTime) =
+    private fun isLastNormalizedTimeTooOld(lastNormalized: LocalDateTime, lastReceived: LocalDateTime) =
             (epoch(lastReceived) - epoch(lastNormalized)) / 1000 / 60 > sensorDataContainer.sensorTimeDistanceMinutes * 2
 
     private fun addNormalizedEntryToEmptyList(lastReceived: SensorDataEntry, sensorTypeData: SensorTypeData, type: SensorEnum) {
 
         val lastTime = lastReceived.time
-        val nextRequiredTime = LocalDateTime.of(lastTime.year, lastTime.month, lastTime.dayOfMonth, lastTime.hour, lastTime.minute, 0, 0)
+        val nextRequiredTime = normalizeTimestamp(lastTime, sensorDataContainer.sensorTimeDistanceMinutes)
         addNewEntry(nextRequiredTime, lastReceived.value, sensorTypeData, type)
         sensorTypeData.lastReceived.set(null)
+    }
+
+    // visible for testing
+    fun normalizeTimestamp(time: LocalDateTime, sensorTimeDistanceMinutes: Long): LocalDateTime {
+
+        val zeroSecondsTime = LocalDateTime.of(time.year, time.month, time.dayOfMonth, time.hour, time.minute, 0, 0)
+        val zeroSecondsEpoch = epoch(zeroSecondsTime)
+        val minuteTimeEpoch = zeroSecondsEpoch / 1000 / 60
+        val normalizedEpoch = zeroSecondsEpoch - (minuteTimeEpoch % sensorTimeDistanceMinutes) * 1000 * 60
+        return dateTime(normalizedEpoch)
     }
 
     // visible for testing
