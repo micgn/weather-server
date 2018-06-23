@@ -1,6 +1,6 @@
 package de.mg.weather.server.api
 
-import de.mg.weather.server.model.SensorData
+import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum
 import de.mg.weather.server.service.Utils.epoch
@@ -15,9 +15,9 @@ class RestControllerTest {
     @Test
     fun currentValues() {
 
-        sut.data = SensorData()
-        sut.data.sensorsMap[SensorEnum.TEMPERATURE_1]!!.lastReceived.set(SensorDataEntry(time(0), 1f))
-        sut.data.sensorsMap[SensorEnum.TEMPERATURE_2]!!.lastReceived.set(SensorDataEntry(time(1), 2f))
+        sut.sensorDataContainer = SensorDataContainer()
+        sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.lastReceived.set(SensorDataEntry(time(0), 1f))
+        sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_2]!!.lastReceived.set(SensorDataEntry(time(1), 2f))
 
         val result = sut.data().current
         assertThat(result[SensorEnum.TEMPERATURE_1]!!.value).isEqualTo(1f)
@@ -28,21 +28,21 @@ class RestControllerTest {
     @Test
     fun valuesEmpty() {
 
-        sut.data = SensorData()
+        sut.sensorDataContainer = SensorDataContainer()
         assertThat(sut.data().data).isEmpty()
     }
 
     @Test
     fun oneSensorSeveralValues() {
 
-        sut.data = SensorData()
+        sut.sensorDataContainer = SensorDataContainer()
 
         val values = listOf(
                 SensorDataEntry(time(0), 12f),
                 SensorDataEntry(time(2), 13f),
                 SensorDataEntry(time(4), 14f))
 
-        sut.data.sensorsMap[SensorEnum.TEMPERATURE_1]!!.values.addAll(values)
+        sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.values.addAll(values)
 
         val result = sut.data().data
         assertThat(result).hasSize(3)
@@ -58,19 +58,19 @@ class RestControllerTest {
     @Test
     fun severalSensors() {
 
-        sut.data = SensorData()
+        sut.sensorDataContainer = SensorDataContainer()
 
         val temp1Values = listOf(
                 SensorDataEntry(time(0), 12f),
                 SensorDataEntry(time(2), 13f))
 
-        sut.data.sensorsMap[SensorEnum.TEMPERATURE_1]!!.values.addAll(temp1Values)
+        sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.values.addAll(temp1Values)
 
         val humiValues = listOf(
                 SensorDataEntry(time(0), 100f),
                 SensorDataEntry(time(1), 150f))
 
-        sut.data.sensorsMap[SensorEnum.HUMIDITY]!!.values.addAll(humiValues)
+        sut.sensorDataContainer.sensorsMap[SensorEnum.HUMIDITY]!!.values.addAll(humiValues)
 
         val result = sut.data().data
         assertThat(result).hasSize(3)

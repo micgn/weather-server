@@ -1,6 +1,6 @@
 package de.mg.weather.server
 
-import de.mg.weather.server.service.DBToMemoryReader
+import de.mg.weather.server.service.SensorDataInitializer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 open class WeatherApp {
 
     @Autowired
-    private lateinit var dbToMemoryReader: DBToMemoryReader
+    private lateinit var sensorDataInitializer: SensorDataInitializer
 
     companion object {
 
@@ -26,7 +26,7 @@ open class WeatherApp {
 
     @EventListener(ApplicationReadyEvent::class)
     fun afterStartup() {
-        dbToMemoryReader.initialize()
+        sensorDataInitializer.initialize()
     }
 
 }

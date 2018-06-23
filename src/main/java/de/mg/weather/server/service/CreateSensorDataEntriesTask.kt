@@ -4,7 +4,7 @@ import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.db.SensorValueEntity
 import de.mg.weather.server.db.SensorValueIdEntity
 import de.mg.weather.server.db.SensorValueRepo
-import de.mg.weather.server.model.SensorData
+import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum
 import de.mg.weather.server.model.SensorTypeData
@@ -21,7 +21,7 @@ class CreateSensorDataEntriesTask {
     lateinit var config: WeatherConfig
 
     @Autowired
-    lateinit var data: SensorData
+    lateinit var sensorDataContainer: SensorDataContainer
 
     @Autowired
     lateinit var repo: SensorValueRepo
@@ -31,26 +31,27 @@ class CreateSensorDataEntriesTask {
     fun run() {
 
         SensorEnum.values().forEach {
-            normalizeSensorData(it)
+            createNormalizeSensorData(it)
+            removeOldEntriesFromMemory(it)
         }
     }
 
-    private fun normalizeSensorData(type: SensorEnum) {
+    private fun createNormalizeSensorData(type: SensorEnum) {
 
-        val sensorData = data.sensorsMap[type]!!
+        val sensorData = sensorDataContainer.sensorsMap[type]!!
 
         val lastReceived = sensorData.lastReceived.get() ?: return
 
         val lastNormalized = sensorData.values.last()
-        if (lastNormalized == null || lastNormalizesTooOld(lastNormalized.time, lastReceived.time))
+        if (lastNormalized == null || isLastNormalizesTooOld(lastNormalized.time, lastReceived.time))
         // TODO add in correct distance!!
             addNormalizedEntryToEmptyList(lastReceived, sensorData, type)
         else
             addNormalizedValuesToNotEmptyList(lastNormalized, lastReceived, sensorData, type)
     }
 
-    private fun lastNormalizesTooOld(lastNormalized: LocalDateTime, lastReceived: LocalDateTime) =
-            (epoch(lastReceived) - epoch(lastNormalized)) / 1000 / 60 > data.sensorTimeDistanceMinutes * 2
+    private fun isLastNormalizesTooOld(lastNormalized: LocalDateTime, lastReceived: LocalDateTime) =
+            (epoch(lastReceived) - epoch(lastNormalized)) / 1000 / 60 > sensorDataContainer.sensorTimeDistanceMinutes * 2
 
     private fun addNormalizedEntryToEmptyList(lastReceived: SensorDataEntry, sensorTypeData: SensorTypeData, type: SensorEnum) {
 
@@ -65,7 +66,7 @@ class CreateSensorDataEntriesTask {
                                           sensorTypeData: SensorTypeData, type: SensorEnum) {
 
         var lastNormalized = lastNormalizedEntry
-        var nextRequiredTime = lastNormalized.time.plusMinutes(data.sensorTimeDistanceMinutes)
+        var nextRequiredTime = lastNormalized.time.plusMinutes(sensorDataContainer.sensorTimeDistanceMinutes)
         var lastReceivedUsed = false
 
         while (nextRequiredTime.isBefore(lastReceived.time)) {
@@ -75,7 +76,7 @@ class CreateSensorDataEntriesTask {
             lastReceivedUsed = true
 
             lastNormalized = newEntry
-            nextRequiredTime = lastNormalized.time.plusMinutes(data.sensorTimeDistanceMinutes)
+            nextRequiredTime = lastNormalized.time.plusMinutes(sensorDataContainer.sensorTimeDistanceMinutes)
         }
 
         if (lastReceivedUsed) sensorTypeData.lastReceived.set(null)
@@ -104,13 +105,12 @@ class CreateSensorDataEntriesTask {
         entity.value = value
         repo.save(entity)
 
-        removeOldEntiesFromMemory(sensorTypeData)
-
         return newEntry
     }
 
-    private fun removeOldEntiesFromMemory(sensorTypeData: SensorTypeData) {
+    private fun removeOldEntriesFromMemory(sensorType: SensorEnum) {
 
+        val sensorTypeData = sensorDataContainer.sensorsMap[sensorType]!!
         val removeBefore = LocalDateTime.now().minusHours(config.hoursToShow.toLong())
         sensorTypeData.values.removeIf { it.time.isBefore(removeBefore) }
     }

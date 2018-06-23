@@ -2,7 +2,7 @@ package de.mg.weather.server.service
 
 import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.db.SensorValueRepo
-import de.mg.weather.server.model.SensorData
+import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum.TEMPERATURE_1
 import de.mg.weather.server.model.SensorTypeData
@@ -29,7 +29,7 @@ open class CreateSensorDataEntriesTaskTest {
 
     @Before
     fun init() {
-        sut.data = SensorData()
+        sut.sensorDataContainer = SensorDataContainer()
     }
 
     @Test

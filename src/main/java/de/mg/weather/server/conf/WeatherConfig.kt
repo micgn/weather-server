@@ -18,4 +18,6 @@ open class WeatherConfig {
 
     val hoursToShow = 48
 
+    val acceptDataPerSensorAtMaxIntervalSeconds = 50L
+
 }

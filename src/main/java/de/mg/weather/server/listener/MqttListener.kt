@@ -1,7 +1,7 @@
 package de.mg.weather.server.listener
 
 import de.mg.weather.server.conf.WeatherConfig
-import de.mg.weather.server.model.SensorData
+import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum.*
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -25,7 +25,7 @@ class MqttListener : MqttCallback {
     private lateinit var config: WeatherConfig
 
     @Autowired
-    private lateinit var sensorData: SensorData
+    private lateinit var sensorDataContainer: SensorDataContainer
 
 
     private lateinit var client: MqttClient
@@ -67,14 +67,15 @@ class MqttListener : MqttCallback {
                     return
                 }
 
-        val last = sensorData.sensorsMap[type]!!.lastReceived
+        val last = sensorDataContainer.sensorsMap[type]!!.lastReceived
 
         // at most every 50s a message may be received per sensor type
         val lastValue = last.get()
-        if (lastValue == null || lastValue.time.isBefore(now().minusSeconds(50)))
+        if (lastValue == null ||
+                lastValue.time.isBefore(now().minusSeconds(config.acceptDataPerSensorAtMaxIntervalSeconds)))
             last.set(SensorDataEntry(timestamp, value))
         else
-            log.error("too many messages for $type: at $timestamp, before at ${lastValue.time}")
+            log.warn("too many messages for $type: at $timestamp, before at ${lastValue.time}")
         return
     }
 
