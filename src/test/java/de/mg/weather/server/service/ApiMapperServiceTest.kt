@@ -5,17 +5,24 @@ import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum
 import de.mg.weather.server.service.Utils.epoch
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime
 
 class ApiMapperServiceTest {
 
-    private val sut = ApiMapperService()
+    private lateinit var sut: ApiMapperService
+
+    @Before
+    fun init() {
+        sut = ApiMapperService()
+        sut.sensorDataContainer = SensorDataContainer()
+        sut.valueNormalization = ValueNormalizationService()
+    }
 
     @Test
     fun currentValues() {
 
-        sut.sensorDataContainer = SensorDataContainer()
         sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.lastReceived.set(SensorDataEntry(time(0), 1f))
         sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_2]!!.lastReceived.set(SensorDataEntry(time(1), 2f))
 
@@ -28,14 +35,11 @@ class ApiMapperServiceTest {
     @Test
     fun valuesEmpty() {
 
-        sut.sensorDataContainer = SensorDataContainer()
         assertThat(sut.data().dataList).isEmpty()
     }
 
     @Test
     fun oneSensorSeveralValues() {
-
-        sut.sensorDataContainer = SensorDataContainer()
 
         val values = listOf(
                 SensorDataEntry(time(0), 12f),
@@ -57,8 +61,6 @@ class ApiMapperServiceTest {
 
     @Test
     fun severalSensors() {
-
-        sut.sensorDataContainer = SensorDataContainer()
 
         val temp1Values = listOf(
                 SensorDataEntry(time(0), 12f),
