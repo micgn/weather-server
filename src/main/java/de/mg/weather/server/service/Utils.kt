@@ -9,5 +9,5 @@ object Utils {
 
     fun epoch(ldt: LocalDateTime) = ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-    fun dateTime(epoch: Long) = Instant.ofEpochMilli(epoch).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    fun dateTime(epoch: Long) = Instant.ofEpochMilli(epoch).atZone(ZoneId.systemDefault()).toLocalDateTime()!!
 }
