@@ -25,7 +25,8 @@ class ApiMapperService {
             }.toMap()
 
 
-    fun dataList(): List<List<Long?>> {
+    // visible for testing
+    fun valuesPerTime(): Map<LocalDateTime, MutableMap<SensorEnum, Float>> {
 
         val firstStepDataMap = mutableMapOf<LocalDateTime, MutableMap<SensorEnum, Float>>()
 
@@ -41,19 +42,30 @@ class ApiMapperService {
             }
         }
 
-        return firstStepDataMap.keys.sorted().map { time ->
-
-            val entryList = mutableListOf<Long?>(Utils.epoch(time))
-            SensorEnum.values().forEach { type ->
-                val sensorValues = firstStepDataMap[time]
-                if (sensorValues != null) {
-                    val sensorTypeValue = sensorValues[type]?.toLong()
-                    entryList.add(sensorTypeValue)
-                } else
-                    entryList.add(null)
-            }
-            entryList.toList()
-        }
-
+        return firstStepDataMap.toMap()
     }
+
+    // visible for tesing
+    fun dataList(valuesPerTime: Map<LocalDateTime, MutableMap<SensorEnum, Float>>): List<List<Long?>> =
+
+            valuesPerTime.keys.sorted().map { time ->
+
+                val entryList = mutableListOf<Long?>(Utils.epoch(time))
+                SensorEnum.values().forEach { type ->
+                    val sensorValues = valuesPerTime[time]
+                    if (sensorValues != null) {
+                        val sensorTypeValue = sensorValues[type]?.toLong()
+                        entryList.add(sensorTypeValue)
+                    } else
+                        entryList.add(null)
+                }
+                entryList.toList()
+            }
+
+
+    fun data(): SensorTypeOrderAndDataList =
+            SensorTypeOrderAndDataList(SensorEnum.values().toList(), dataList(valuesPerTime()))
+
+
+    class SensorTypeOrderAndDataList(val order: List<SensorEnum>, val dataList: List<List<Long?>>)
 }

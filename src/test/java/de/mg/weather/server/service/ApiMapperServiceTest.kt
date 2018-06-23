@@ -29,7 +29,7 @@ class ApiMapperServiceTest {
     fun valuesEmpty() {
 
         sut.sensorDataContainer = SensorDataContainer()
-        assertThat(sut.dataList()).isEmpty()
+        assertThat(sut.data().dataList).isEmpty()
     }
 
     @Test
@@ -44,7 +44,7 @@ class ApiMapperServiceTest {
 
         sut.sensorDataContainer.sensorsMap[SensorEnum.TEMPERATURE_1]!!.values.addAll(values)
 
-        val result = sut.dataList()
+        val result = sut.dataList(sut.valuesPerTime())
         assertThat(result).hasSize(3)
         assertThat(result[0]).hasSize(SensorEnum.values().size + 1)
 
@@ -72,7 +72,7 @@ class ApiMapperServiceTest {
 
         sut.sensorDataContainer.sensorsMap[SensorEnum.HUMIDITY]!!.values.addAll(humiValues)
 
-        val result = sut.dataList()
+        val result = sut.dataList(sut.valuesPerTime())
         assertThat(result).hasSize(3)
         assertThat(result[0]).hasSize(SensorEnum.values().size + 1)
 
