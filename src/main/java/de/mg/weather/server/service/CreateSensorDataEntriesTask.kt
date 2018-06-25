@@ -43,7 +43,7 @@ class CreateSensorDataEntriesTask {
 
         val lastReceived = sensorData.lastReceived.get() ?: return
 
-        val lastNormalized = sensorData.values.last()
+        val lastNormalized = sensorData.values.peekLast()
         if (lastNormalized == null || isLastNormalizedTimeTooOld(lastNormalized.time, lastReceived.time))
             addNormalizedEntryToEmptyList(lastReceived, sensorData, type)
         else

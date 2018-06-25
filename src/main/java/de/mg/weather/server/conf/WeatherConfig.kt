@@ -11,7 +11,7 @@ open class WeatherConfig {
     var mqttBrokerUrl: String = ""
 
 
-    val topics = mapOf("t1" to SensorEnum.TEMPERATURE_1,
+    val topicToSensor = mapOf("t1" to SensorEnum.TEMPERATURE_1,
             "t2" to SensorEnum.TEMPERATURE_2,
             "p" to SensorEnum.PRESSURE,
             "h" to SensorEnum.HUMIDITY)

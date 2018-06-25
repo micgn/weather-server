@@ -3,7 +3,6 @@ package de.mg.weather.server.listener
 import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
-import de.mg.weather.server.model.SensorEnum.*
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -36,7 +35,7 @@ class MqttListener : MqttCallback {
         client = MqttClient(config.mqttBrokerUrl, "WeatherServer")
         client.connect()
         client.setCallback(this)
-        client.subscribe(config.topics.keys.toTypedArray())
+        client.subscribe(config.topicToSensor.keys.toTypedArray())
     }
 
 
@@ -45,13 +44,7 @@ class MqttListener : MqttCallback {
         if (topic == null || message == null)
             return
 
-        val topicToSensor = mapOf(
-                "sensor/temperature1" to TEMPERATURE_1,
-                "sensor/temperature2" to TEMPERATURE_2,
-                "sensor/pressure" to PRESSURE,
-                "sensor/humidity" to HUMIDITY)
-
-        val type = topicToSensor[topic]
+        val type = config.topicToSensor[topic]
         if (type == null) {
             log.error("received unexpected topic: '$topic'")
             return
@@ -66,6 +59,8 @@ class MqttListener : MqttCallback {
                     log.error("received invalid payload: '$messageStr'")
                     return
                 }
+
+        log.debug("topic: '$topic', message: '$messageStr'")
 
         val last = sensorDataContainer.sensorsMap[type]!!.lastReceived
 
