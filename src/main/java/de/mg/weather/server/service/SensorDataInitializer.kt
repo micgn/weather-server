@@ -5,6 +5,7 @@ import de.mg.weather.server.db.SensorValueRepo
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
 import de.mg.weather.server.model.SensorEnum
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -13,6 +14,9 @@ import java.time.ZoneId
 
 @Component
 class SensorDataInitializer {
+
+    private val log = LoggerFactory.getLogger(SensorDataInitializer::class.java.name)
+
 
     @Autowired
     private lateinit var config: WeatherConfig
@@ -28,6 +32,8 @@ class SensorDataInitializer {
 
         val showSince = LocalDateTime.now().minusHours(config.hoursToShow.toLong())
         val allData = repo.findSince(Utils.epoch(showSince)).toList()
+
+        log.info("loaded from db: ${allData.size} entries, ${repo.count()} present overall")
 
         SensorEnum.values().forEach { type ->
 
