@@ -1,2 +1,6 @@
 mqtt:
   broker.url: tcp://localhost
+
+logging:
+  level:
+    ROOT: DEBUG
