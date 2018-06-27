@@ -4,6 +4,7 @@ import de.mg.weather.server.api.SensorTimeValue
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorEnum
 import de.mg.weather.server.model.SensorEnum.values
+import de.mg.weather.server.service.Utils.epoch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -21,11 +22,8 @@ class ApiMapperService {
     fun currentValuesMap(): Map<SensorEnum, SensorTimeValue?> =
 
             values().map { type ->
-                val last = sensorDataContainer.sensorsMap[type]!!.lastReceived.get()
-                if (last != null)
-                    type to SensorTimeValue(Utils.epoch(last.time), last.value)
-                else
-                    type to null
+                val current = sensorDataContainer.sensorsMap[type]!!.current()
+                type to (if (current != null) SensorTimeValue(epoch(current.time), current.value) else null)
             }.toMap()
 
 
@@ -50,12 +48,12 @@ class ApiMapperService {
     }
 
 
-    // visible for tesing
+    // visible for testing
     fun dataList(valuesPerTime: Map<LocalDateTime, Map<SensorEnum, Float>>): List<List<Long?>> =
 
             valuesPerTime.keys.sorted().map { time ->
 
-                val entryList = mutableListOf<Long?>(Utils.epoch(time))
+                val entryList = mutableListOf<Long?>(epoch(time))
                 values().forEach { type ->
                     val sensorValues = valuesPerTime[time]
                     if (sensorValues != null) {
