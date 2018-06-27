@@ -10,5 +10,7 @@ class SensorTypeData(val type: SensorEnum) {
 
     val values = ConcurrentLinkedDeque<SensorDataEntry>()
 
+    fun current(): SensorDataEntry? = lastReceived.get() ?: values.peekLast()
+
 }
 
