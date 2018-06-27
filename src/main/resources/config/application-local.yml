@@ -3,4 +3,5 @@ mqtt:
 
 logging:
   level:
-    ROOT: DEBUG
+    ROOT: INFO
+    de.mg.wather.server: DEBUG
