@@ -1,20 +1,27 @@
 mqtt:
-  broker.url: tcp://192.168.118.11:1883
-
-logging:
-  level:
-    ROOT: INFO
-    de.mg.wather.server: INFO
+  broker.url: tcp://localhost
 
 spring:
   datasource:
       url: jdbc:hsqldb:file:~/hsqldb/weather/weather
       username: sa
       password:
-      min-idle: 2
+      min-idle: 0
       max-idle: 2
-      max-active: 5
+      max-active: 10
       test-on-borrow: true
       validation-query: SELECT 1
     jpa.hibernate.ddl-auto: update
     jpa.properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
+
+
+# to be set from the command line
+basicAuth:
+  user:
+  pssword:
+
+
+logging:
+  level:
+    ROOT: INFO
+    de.mg.wather.server: INFO
