@@ -4,6 +4,7 @@ import de.mg.weather.server.model.SensorEnum
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import java.time.LocalDateTime
+import java.util.*
 
 @Configuration
 open class WeatherConfig {
@@ -19,9 +20,25 @@ open class WeatherConfig {
 
     val hoursToShow = 48
 
-    fun showSince() = LocalDateTime.now().minusHours(hoursToShow.toLong())
+    fun showSince() = LocalDateTime.now().minusHours(hoursToShow.toLong())!!
 
 
     val acceptDataPerSensorAtMaxIntervalSeconds = 50L
+
+
+    @Value("\${basicAuth.user:}")
+    var basicAuthUser: String? = null
+
+    @Value("\${basicAuth.password:}")
+    var basicAuthPassword: String? = null
+
+    fun basicAuthEncoded(): String? {
+        if (basicAuthUser.isNullOrBlank() || basicAuthPassword.isNullOrBlank()) return null
+
+        val userPw = "$basicAuthUser:$basicAuthPassword"
+        val encodedBytes = Base64.getEncoder().encode(userPw.toByteArray())
+        return String(encodedBytes)
+    }
+
 
 }

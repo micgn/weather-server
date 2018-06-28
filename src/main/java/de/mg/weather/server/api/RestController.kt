@@ -15,10 +15,10 @@ import javax.websocket.server.PathParam
 class RestController {
 
     @Autowired
-    lateinit var apiMapper: ApiMapperService
+    private lateinit var apiMapper: ApiMapperService
 
     @Autowired
-    lateinit var originalDataService: OriginalDataService
+    private lateinit var originalDataService: OriginalDataService
 
 
     @RequestMapping(value = "/data", produces = ["application/json"])
