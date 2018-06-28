@@ -9,14 +9,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Component
 class SensorDataInitializer {
 
     private val log = LoggerFactory.getLogger(SensorDataInitializer::class.java.name)
-
 
     @Autowired
     private lateinit var config: WeatherConfig
@@ -30,8 +28,7 @@ class SensorDataInitializer {
 
     fun initialize() {
 
-        val showSince = LocalDateTime.now().minusHours(config.hoursToShow.toLong())
-        val allData = repo.findSince(Utils.epoch(showSince)).toList()
+        val allData = repo.findSince(Utils.epoch(config.showSince())).toList()
 
         log.info("loaded from db: ${allData.size} entries, ${repo.count()} present overall")
 
