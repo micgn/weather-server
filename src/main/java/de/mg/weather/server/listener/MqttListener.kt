@@ -3,16 +3,14 @@ package de.mg.weather.server.listener
 import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorDataEntry
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
-import org.eclipse.paho.client.mqttv3.MqttCallback
-import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime.now
 import javax.annotation.PostConstruct
+
 
 @Profile("!test")
 @Component
@@ -32,8 +30,14 @@ class MqttListener : MqttCallback {
     @PostConstruct
     fun init() {
 
+        val connOpt = MqttConnectOptions()
+        if (config.isBrokerAuth()) {
+            connOpt.userName = config.mqttBrokerUser
+            connOpt.password = config.mqttBrokerPassword.toCharArray()
+        }
+
         client = MqttClient(config.mqttBrokerUrl, "WeatherServer")
-        client.connect()
+        client.connect(connOpt)
         client.setCallback(this)
         client.subscribe(config.topicToSensor.keys.toTypedArray())
     }

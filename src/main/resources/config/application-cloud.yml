@@ -1,18 +1,22 @@
-mqtt:
-  broker.url: tcp://localhost
+server.port: 5555
+
+mqtt.broker:
+  url:
+  user:
+  password:
 
 spring:
   datasource:
-      url: jdbc:hsqldb:file:~/hsqldb/weather/weather
-      username: sa
-      password:
-      min-idle: 0
-      max-idle: 2
-      max-active: 10
-      test-on-borrow: true
-      validation-query: SELECT 1
-    jpa.hibernate.ddl-auto: update
-    jpa.properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
+    url: jdbc:hsqldb:file:~/hsqldb/weather/weather
+    username: sa
+    password:
+    min-idle: 0
+    max-idle: 2
+    max-active: 10
+    test-on-borrow: true
+    validation-query: SELECT 1
+  jpa.hibernate.ddl-auto: update
+  jpa.properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
 
 
 # to be set from the command line
