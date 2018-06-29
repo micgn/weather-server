@@ -1,18 +1,21 @@
 package de.mg.weather.server.api
 
 
-import de.mg.weather.server.model.SensorEnum
+import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.service.ApiMapperService
 import de.mg.weather.server.service.OriginalDataService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import javax.websocket.server.PathParam
 
 
 @org.springframework.web.bind.annotation.RestController
 class RestController {
+
+    @Autowired
+    private lateinit var config: WeatherConfig
 
     @Autowired
     private lateinit var apiMapper: ApiMapperService
@@ -30,12 +33,9 @@ class RestController {
 
 
     @RequestMapping(value = "/original/{type}", produces = ["application/csv"])
-    fun originalData(@PathParam("type") type: String): ResponseEntity<String> {
-        val typeEnum = try {
-            SensorEnum.valueOf(type)
-        } catch (e: IllegalArgumentException) {
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
-        }
+    fun originalData(@PathVariable("type") type: String): ResponseEntity<String> {
+        val typeEnum = config.topicToSensor[type] ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
+
         val result = originalDataService.createCsv(typeEnum)
         return ResponseEntity.ok(result)
     }
