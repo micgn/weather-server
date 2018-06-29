@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 @Component
 open class SensorDataContainer {
 
-    val sensorTimeDistanceMinutes = 2L
+    val sensorTimeDistanceMinutes = 3L
 
     val sensorsMap = mapOf(
             TEMPERATURE_1 to SensorTypeData(TEMPERATURE_1),
