@@ -29,10 +29,10 @@ spring:
 
 
 
-# to be set from the command line
+# to be set from the command line, needs to be the same within the angular client!
 basicAuth:
   user:
-  pssword:
+  password:
 alertEmail:
 
 logging:

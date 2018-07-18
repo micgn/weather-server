@@ -3,3 +3,4 @@
 target
 src/main/resources/static/**
 WeatherServer-tcplocalhost
+application-auth.yml
