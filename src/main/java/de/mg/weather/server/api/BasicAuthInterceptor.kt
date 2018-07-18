@@ -3,6 +3,7 @@ package de.mg.weather.server.api
 import de.mg.weather.server.conf.WeatherConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -25,8 +26,11 @@ open class BasicAuthInterceptor : WebMvcConfigurerAdapter() {
 
     private class AuthHandler(val basicAuthEncoded: String) : HandlerInterceptor {
 
-        override fun preHandle(req: HttpServletRequest?, res: HttpServletResponse?, handler: Any?) =
-                req!!.getHeader("Authorization") == "Basic $basicAuthEncoded"
+        override fun preHandle(req: HttpServletRequest?, res: HttpServletResponse?, handler: Any?): Boolean {
+            val authorized = req!!.getHeader("Authorization") == "Basic $basicAuthEncoded"
+            if (!authorized) res!!.sendError(HttpStatus.UNAUTHORIZED.value())
+            return authorized
+        }
 
 
         override fun postHandle(req: HttpServletRequest?, res: HttpServletResponse?, handler: Any?, modelAndView: ModelAndView?) {
