@@ -33,6 +33,7 @@ open class CreateSensorDataEntriesTaskTest {
     @Before
     fun init() {
         sut.sensorDataContainer = SensorDataContainer()
+        sut.sensorDataContainer.sensorTimeDistanceMinutes = 2
     }
 
     @Test
