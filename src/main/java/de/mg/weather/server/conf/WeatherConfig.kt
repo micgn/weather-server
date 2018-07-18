@@ -53,6 +53,10 @@ open class WeatherConfig {
         return String(encodedBytes)
     }
 
+
+    @Value("\${alertEmail:}")
+    var alertEmailAddress: String = ""
+
     @PostConstruct
     fun init() {
         log.info(toString())

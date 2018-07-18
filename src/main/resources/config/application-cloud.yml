@@ -1,5 +1,6 @@
 server.port: 5555
 
+# to be set from the command line
 mqtt.broker:
   url:
   user:
@@ -17,13 +18,22 @@ spring:
     validation-query: SELECT 1
   jpa.hibernate.ddl-auto: update
   jpa.properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:  # to be set on the command line
+    password:  # to be set on the command line
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+
 
 
 # to be set from the command line
 basicAuth:
   user:
   pssword:
-
+alertEmail:
 
 logging:
   level:
