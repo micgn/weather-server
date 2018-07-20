@@ -30,6 +30,7 @@ class MqttListener : MqttCallback {
     @PostConstruct
     fun init() {
 
+        log.info("going to establish connection to MQTT")
         val connOpt = MqttConnectOptions()
         if (config.isBrokerAuth()) {
             connOpt.userName = config.mqttBrokerUser
@@ -80,8 +81,17 @@ class MqttListener : MqttCallback {
 
 
     override fun connectionLost(cause: Throwable?) {
-        log.error("connection to broker lost", cause)
-        // TODO might be useful to reconnect
+        log.warn("connection to broker lost", cause)
+
+        try {
+            if (client.isConnected) client.disconnect()
+            client.close(true)
+
+        } catch (e: MqttException) {
+            log.warn("exception while diconnecting/closing client after lost connection", e)
+        }
+
+        init()
     }
 
     override fun deliveryComplete(token: IMqttDeliveryToken?) {
