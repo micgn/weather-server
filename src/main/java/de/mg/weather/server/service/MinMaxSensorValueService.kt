@@ -17,8 +17,8 @@ open class MinMaxSensorValueService {
         val maxEntity = repo.findMaxValue(type) ?: return null
         val minEntity = repo.findMinValue(type) ?: return null
 
-        return MinMax(minEntity.value!!, Utils.dateTime(minEntity.id!!.time)!!,
-                maxEntity.value!!, Utils.dateTime(maxEntity.id!!.time)!!)
+        return MinMax(minEntity.getValue(), Utils.dateTime(minEntity.getId().getTime()),
+                maxEntity.getValue(), Utils.dateTime(maxEntity.getId().getTime()))
     }
 
     class MinMax(val min: Float, val minTime: LocalDateTime,

@@ -10,10 +10,20 @@ import javax.persistence.Table
 class SensorValueEntity {
 
     @EmbeddedId
-    var id: SensorValueIdEntity? = null
+    private var id: SensorValueIdEntity? = null
+
+    fun getId() = id!!
+    fun setId(id: SensorValueIdEntity) {
+        this.id = id
+    }
 
 
     @Column(nullable = false)
-    var value: Float? = null
+    private var value: Float? = null
+
+    fun getValue() = value!!
+    fun setValue(value: Float) {
+        this.value = value
+    }
 
 }

@@ -10,10 +10,20 @@ class SensorValueIdEntity : Serializable {
 
 
     @Column(nullable = false)
-    var type: SensorEnum? = null
+    private var type: SensorEnum? = null
+
+    fun getType() = type!!
+    fun setType(type: SensorEnum) {
+        this.type = type
+    }
 
 
     @Column(nullable = false)
-    var time: Long? = null
+    private var time: Long? = null
+
+    fun getTime() = time!!
+    fun setTime(time: Long) {
+        this.time = time
+    }
 
 }

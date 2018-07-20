@@ -36,10 +36,10 @@ class SensorDataInitializer {
 
             val dataList = sensorDataContainer.sensorsMap[type]!!.values
 
-            allData.filter { it.id!!.type == type }.sortedBy { it.id!!.time }.forEach { sensorValueEntity ->
+            allData.filter { it.getId().getType() == type }.sortedBy { it.getId().getTime() }.forEach { sensorValueEntity ->
 
-                val localDateTime = Instant.ofEpochMilli(sensorValueEntity.id!!.time!!).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                dataList.add(SensorDataEntry(localDateTime, sensorValueEntity.value!!))
+                val localDateTime = Instant.ofEpochMilli(sensorValueEntity.getId().getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime()
+                dataList.add(SensorDataEntry(localDateTime, sensorValueEntity.getValue()))
             }
         }
     }

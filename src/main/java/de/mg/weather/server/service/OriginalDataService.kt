@@ -20,9 +20,9 @@ class OriginalDataService {
         val allData = repo.findSince(Utils.epoch(config.showSince())).toList()
 
         var result = ""
-        allData.filter { it.id!!.type == type }.sortedBy { it.id!!.time }.forEach {
-            result += Utils.dateTime(it.id!!.time!!).toString() + ";"
-            result += it.value.toString() + "\n"
+        allData.filter { it.getId().getType() == type }.sortedBy { it.getId().getTime() }.forEach {
+            result += Utils.dateTime(it.getId().getTime()).toString() + ";"
+            result += it.getValue().toString() + "\n"
         }
         return result
     }

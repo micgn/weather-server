@@ -108,11 +108,11 @@ class CreateSensorDataEntriesTask {
 
         // save to db
         val id = SensorValueIdEntity()
-        id.type = sensorType
-        id.time = epoch(time)
+        id.setType(sensorType)
+        id.setTime(epoch(time))
         val entity = SensorValueEntity()
-        entity.id = id
-        entity.value = value
+        entity.setId(id)
+        entity.setValue(value)
         repo.save(entity)
 
         return newEntry
