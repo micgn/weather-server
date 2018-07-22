@@ -1,21 +1,26 @@
 package de.mg.weather.server.service
 
-import de.mg.weather.server.db.SensorValueRepo
+import de.mg.weather.server.db.SensorValueEntity
 import de.mg.weather.server.model.SensorEnum
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import javax.persistence.EntityManager
+import javax.persistence.NoResultException
+import javax.persistence.PersistenceContext
+
 
 @Component
 open class MinMaxSensorValueService {
 
-    @Autowired
-    lateinit var repo: SensorValueRepo
+    @PersistenceContext
+    private lateinit var em: EntityManager
+
 
     fun minMax(type: SensorEnum): MinMax? {
 
-        val maxEntity = repo.findMaxValue(type) ?: return null
-        val minEntity = repo.findMinValue(type) ?: return null
+
+        val maxEntity = findMax(type) ?: return null
+        val minEntity = findMin(type) ?: return null
 
         return MinMax(minEntity.getValue(), Utils.dateTime(minEntity.getId().getTime()),
                 maxEntity.getValue(), Utils.dateTime(maxEntity.getId().getTime()))
@@ -25,18 +30,22 @@ open class MinMaxSensorValueService {
                  val max: Float, val maxTime: LocalDateTime) {
 
         fun dist() = max - min
+    }
 
-        fun getMerged(other: MinMax?): MinMax =
+    private fun findMax(type: SensorEnum): SensorValueEntity? = findMinMax(type, "desc")
 
-                if (other == null)
-                    MinMax(min, minTime, max, maxTime)
-                else
-                    MinMax(
-                            if (this.min < other.min) this.min else other.min,
-                            if (this.min < other.min) this.minTime else other.minTime,
-                            if (this.max > other.max) this.max else other.max,
-                            if (this.max > other.max) this.maxTime else other.maxTime
-                    )
+    private fun findMin(type: SensorEnum): SensorValueEntity? = findMinMax(type, "asc")
 
+    private fun findMinMax(type: SensorEnum, order: String): SensorValueEntity? {
+        val query =
+                em.createQuery("select s from SensorValueEntity s where s.id.type = :type order by s.value $order")
+                        .setParameter("type", type)
+                        .setMaxResults(1)
+
+        return try {
+            query.singleResult as SensorValueEntity
+        } catch (e: NoResultException) {
+            null
+        }
     }
 }
