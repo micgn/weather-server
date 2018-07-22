@@ -38,4 +38,4 @@ alertEmail:
 logging:
   level:
     ROOT: INFO
-    de.mg.wather.server: INFO
+    de.mg.weather.server: INFO

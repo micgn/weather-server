@@ -4,4 +4,4 @@ mqtt:
 logging:
   level:
     ROOT: INFO
-    de.mg.wather.server: DEBUG
+    de.mg.weather.server: DEBUG
