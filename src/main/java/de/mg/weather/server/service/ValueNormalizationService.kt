@@ -22,9 +22,7 @@ open class ValueNormalizationService {
 
         if (valuesPerTime.isEmpty()) return emptyMap()
 
-        val t1MinMax = minMaxSensorValueService.minMax(TEMPERATURE_1)
-        val t2MinMax = minMaxSensorValueService.minMax(TEMPERATURE_2)
-        val temperatureMinMax = t1MinMax?.getMerged(t2MinMax) ?: t2MinMax?.getMerged(t1MinMax)
+        val temperatureRange = temperatureRange(valuesPerTime)
 
         val pressureMinMax = minMaxSensorValueService.minMax(PRESSURE)
         val humidityMinMax = minMaxSensorValueService.minMax(HUMIDITY)
@@ -33,8 +31,8 @@ open class ValueNormalizationService {
                 when (type) {
                     TEMPERATURE_1 -> value
                     TEMPERATURE_2 -> value
-                    PRESSURE -> normalizeValue(value, pressureMinMax, temperatureMinMax)
-                    HUMIDITY -> normalizeValue(value, humidityMinMax, temperatureMinMax)
+                    PRESSURE -> normalizeValue(value, pressureMinMax, temperatureRange)
+                    HUMIDITY -> normalizeValue(value, humidityMinMax, temperatureRange)
                 }
 
         return valuesPerTime.entries.map { timedEntry ->
@@ -47,7 +45,7 @@ open class ValueNormalizationService {
 
 
     // visible for testing
-    fun normalizeValue(value: Float, valueRange: MinMax?, targetRange: MinMax?): Float =
+    fun normalizeValue(value: Float, valueRange: MinMax?, targetRange: Range?): Float =
             if (valueRange == null || targetRange == null)
                 value
             else if (valueRange.dist() == 0f || targetRange.dist() == 0f)
@@ -55,4 +53,20 @@ open class ValueNormalizationService {
             else
                 (value - valueRange.min) / valueRange.dist() * targetRange.dist() + targetRange.min
 
+
+    private fun temperatureRange(valuesPerTime: Map<LocalDateTime, Map<SensorEnum, Float>>): Range? {
+
+        val relevantValues = valuesPerTime.values.flatMap { sensorValues ->
+            listOf(TEMPERATURE_1, TEMPERATURE_2).map { sensorValues[it] }
+        }.filterNotNull()
+
+        val min = relevantValues.minBy { it }
+        val max = relevantValues.maxBy { it }
+        return if (min != null && max != null) Range(min, max) else null
+    }
+
+    class Range(val min: Float, val max: Float) {
+
+        fun dist() = max - min
+    }
 }
