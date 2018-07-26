@@ -84,12 +84,18 @@ class MqttListener : MqttCallback {
         log.warn("connection to broker lost", cause)
 
         try {
-            if (client.isConnected) client.disconnect()
+            if (client.isConnected) {
+                client.disconnect()
+                log.info("client disconnected")
+            }
             client.close(true)
+            log.info("client closed")
 
         } catch (e: MqttException) {
             log.warn("exception while diconnecting/closing client after lost connection", e)
         }
+
+        Thread.sleep(30 * 1000)
 
         init()
     }
