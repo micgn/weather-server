@@ -49,15 +49,15 @@ class ApiMapperService {
 
 
     // visible for testing
-    fun dataList(valuesPerTime: Map<LocalDateTime, Map<SensorEnum, Float>>): List<List<Long?>> =
+    fun dataList(valuesPerTime: Map<LocalDateTime, Map<SensorEnum, Float>>): List<List<Number?>> =
 
             valuesPerTime.keys.sorted().map { time ->
 
-                val entryList = mutableListOf<Long?>(epoch(time))
+                val entryList = mutableListOf<Number?>(epoch(time))
                 values().forEach { type ->
                     val sensorValues = valuesPerTime[time]
                     if (sensorValues != null) {
-                        val sensorTypeValue = sensorValues[type]?.toLong()
+                        val sensorTypeValue = sensorValues[type]
                         entryList.add(sensorTypeValue)
                     } else
                         entryList.add(null)
@@ -66,7 +66,7 @@ class ApiMapperService {
             }
 
 
-    class SensorTypeOrderAndDataList(val order: List<SensorEnum>, val dataList: List<List<Long?>>)
+    class SensorTypeOrderAndDataList(val order: List<SensorEnum>, val dataList: List<List<Number?>>)
 
     fun data(): SensorTypeOrderAndDataList {
 

@@ -7,7 +7,7 @@ class ApiData(
         val series: List<SensorEnum>,
 
         /** first list = x axis, second list = x value and y values for all series **/
-        val data: List<List<Long?>>,
+        val data: List<List<Number?>>,
 
         val current: Map<SensorEnum, SensorTimeValue?>)
 

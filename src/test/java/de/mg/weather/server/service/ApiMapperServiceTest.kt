@@ -53,10 +53,10 @@ class ApiMapperServiceTest {
         assertThat(result[0]).hasSize(SensorEnum.values().size + 1)
 
         assertThat(result[0][0]).isEqualTo(epoch(time(0)))
-        assertThat(result[0][1]).isEqualTo(12L)
+        assertThat(result[0][1]).isEqualTo(12f)
         assertThat(result[0][2]).isNull()
 
-        assertThat(result[2][1]).isEqualTo(14L)
+        assertThat(result[2][1]).isEqualTo(14f)
     }
 
     @Test
@@ -79,17 +79,17 @@ class ApiMapperServiceTest {
         assertThat(result[0]).hasSize(SensorEnum.values().size + 1)
 
         assertThat(result[0][0]).isEqualTo(epoch(time(0)))
-        assertThat(result[0][1]).isEqualTo(12L)
+        assertThat(result[0][1]).isEqualTo(12f)
         assertThat(result[0][2]).isNull()
-        assertThat(result[0][3]).isEqualTo(100L)
+        assertThat(result[0][3]).isEqualTo(100f)
         assertThat(result[0][4]).isNull()
 
         assertThat(result[1][0]).isEqualTo(epoch(time(1)))
         assertThat(result[1][1]).isNull()
-        assertThat(result[1][3]).isEqualTo(150L)
+        assertThat(result[1][3]).isEqualTo(150f)
 
         assertThat(result[2][0]).isEqualTo(epoch(time(2)))
-        assertThat(result[2][1]).isEqualTo(13L)
+        assertThat(result[2][1]).isEqualTo(13f)
         assertThat(result[2][3]).isNull()
     }
 
