@@ -25,11 +25,14 @@ class RestController {
 
 
     @RequestMapping(value = "/data", produces = ["application/json"])
-    fun data() = ApiData(
-            current = apiMapper.currentValuesMap(),
-            series = apiMapper.data().order,
-            data = apiMapper.data().dataList
-    )
+    fun data(): ApiData {
+        val data = apiMapper.data()
+        return ApiData(
+                current = apiMapper.currentValuesMap(),
+                series = data.order,
+                data = data.dataList
+        )
+    }
 
 
     @RequestMapping(value = "/original/{type}", produces = ["application/csv"])
