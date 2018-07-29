@@ -31,7 +31,7 @@ open class WeatherConfig {
             "p" to SensorEnum.PRESSURE,
             "h" to SensorEnum.HUMIDITY)
 
-    val hoursToShow = 48
+    val hoursToShow = 96
 
     fun showSince() = LocalDateTime.now().minusHours(hoursToShow.toLong())!!
 
