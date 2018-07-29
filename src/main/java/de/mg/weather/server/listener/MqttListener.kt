@@ -32,11 +32,15 @@ class MqttListener : MqttCallback {
 
         log.info("going to establish connection to MQTT")
         val connOpt = MqttConnectOptions()
-        connOpt.isAutomaticReconnect = true
         if (config.isBrokerAuth()) {
             connOpt.userName = config.mqttBrokerUser
             connOpt.password = config.mqttBrokerPassword.toCharArray()
         }
+
+        // properties to maybe fix the connection lost problem
+        connOpt.isAutomaticReconnect = true
+        connOpt.connectionTimeout = 300
+        connOpt.keepAliveInterval = 300
 
         client = MqttClient(config.mqttBrokerUrl, "WeatherServer")
         client.connect(connOpt)
