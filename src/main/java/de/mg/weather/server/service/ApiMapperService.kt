@@ -21,7 +21,7 @@ class ApiMapperService {
 
     fun currentValuesMap(): Map<SensorEnum, SensorTimeValue?> =
 
-            values().map { type ->
+            SensorEnum.values().map { type ->
                 val current = sensorDataContainer.sensorsMap[type]!!.current()
                 type to (if (current != null) SensorTimeValue(epoch(current.time), current.value) else null)
             }.toMap()
@@ -32,7 +32,7 @@ class ApiMapperService {
 
         val firstStepDataMap = mutableMapOf<LocalDateTime, MutableMap<SensorEnum, Float>>()
 
-        values().forEach { type ->
+        SensorEnum.values().forEach { type ->
 
             sensorDataContainer.sensorsMap[type]!!.values.forEach { entry ->
                 var sensorValues = firstStepDataMap[entry.time]
@@ -54,7 +54,7 @@ class ApiMapperService {
             valuesPerTime.keys.sorted().map { time ->
 
                 val entryList = mutableListOf<Number?>(epoch(time))
-                values().forEach { type ->
+                SensorEnum.values().forEach { type ->
                     val sensorValues = valuesPerTime[time]
                     if (sensorValues != null) {
                         val sensorTypeValue = sensorValues[type]
