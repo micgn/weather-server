@@ -31,7 +31,9 @@ open class WeatherConfig {
             "p" to SensorEnum.PRESSURE,
             "h" to SensorEnum.HUMIDITY)
 
-    val hoursToShow = 96
+    val hoursToShow = 4 * 24
+
+    val daysBackMinMax = arrayOf(4, 60, 99999)
 
     fun showSince() = LocalDateTime.now().minusHours(hoursToShow.toLong())!!
 

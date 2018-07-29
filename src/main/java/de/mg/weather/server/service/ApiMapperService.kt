@@ -1,6 +1,8 @@
 package de.mg.weather.server.service
 
+import de.mg.weather.server.api.PeriodMinMax
 import de.mg.weather.server.api.SensorTimeValue
+import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorEnum
 import de.mg.weather.server.model.SensorEnum.values
@@ -17,6 +19,12 @@ class ApiMapperService {
 
     @Autowired
     lateinit var valueNormalization: ValueNormalizationService
+
+    @Autowired
+    lateinit var minMaxSensorValueService: MinMaxSensorValueService
+
+    @Autowired
+    lateinit var config: WeatherConfig
 
 
     fun currentValuesMap(): Map<SensorEnum, SensorTimeValue?> =
@@ -66,14 +74,31 @@ class ApiMapperService {
             }
 
 
-    class SensorTypeOrderAndDataList(val order: List<SensorEnum>, val dataList: List<List<Number?>>)
+    private fun minMax(): List<PeriodMinMax> {
 
-    fun data(): SensorTypeOrderAndDataList {
+        // TODO
+        val x = config.daysBackMinMax.map { daysBack ->
+            {
+                val minMaxPerType = SensorEnum.values().map { type -> type to minMaxSensorValueService.minMax(type, daysBack) }.toMap()
+                val mins = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.minTime), it.value!!.min) else null }.toMap()
+                val maxs = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.maxTime), it.value!!.max) else null }.toMap()
+                PeriodMinMax(daysBack, mins, maxs)
+            }
+        }
+        return x
+
+    }
+
+    class ServiceDataContainer(val order: List<SensorEnum>,
+                               val dataList: List<List<Number?>>,
+                               val minMax: List<PeriodMinMax>)
+
+    fun data(): ServiceDataContainer {
 
         val valuesPerTime = valuesPerTime()
         val normalizedValuesPerTime = valueNormalization.normalizeValues(valuesPerTime)
         val dataList = dataList(normalizedValuesPerTime)
 
-        return SensorTypeOrderAndDataList(values().toList(), dataList)
+        return ServiceDataContainer(values().toList(), dataList, minMax())
     }
 }

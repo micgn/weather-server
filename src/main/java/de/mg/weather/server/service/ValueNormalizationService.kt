@@ -24,8 +24,8 @@ open class ValueNormalizationService {
 
         val temperatureRange = temperatureRange(valuesPerTime)
 
-        val pressureMinMax = minMaxSensorValueService.minMax(PRESSURE)
-        val humidityMinMax = minMaxSensorValueService.minMax(HUMIDITY)
+        val pressureMinMax = minMaxSensorValueService.minMax(PRESSURE, 10 * 365)
+        val humidityMinMax = minMaxSensorValueService.minMax(HUMIDITY, 10 * 365)
 
         fun normalizeValue(type: SensorEnum, value: Float): Float =
                 when (type) {
