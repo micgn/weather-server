@@ -24,18 +24,19 @@ class RestController {
     private lateinit var originalDataService: OriginalDataService
 
 
-    @RequestMapping(value = "/data", produces = ["application/json"])
+    @RequestMapping(value = ["/data"], produces = ["application/json"])
     fun data(): ApiData {
         val data = apiMapper.data()
         return ApiData(
                 current = apiMapper.currentValuesMap(),
                 series = data.order,
-                data = data.dataList
+                data = data.dataList,
+                minMax = data.minMax
         )
     }
 
 
-    @RequestMapping(value = "/original/{type}", produces = ["application/csv"])
+    @RequestMapping(value = ["/original/{type}"], produces = ["application/csv"])
     fun originalData(@PathVariable("type") type: String): ResponseEntity<String> {
         val typeEnum = config.topicToSensor[type] ?: return ResponseEntity(HttpStatus.BAD_REQUEST)
 

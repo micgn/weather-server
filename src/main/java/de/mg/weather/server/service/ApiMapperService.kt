@@ -76,17 +76,15 @@ class ApiMapperService {
 
     private fun minMax(): List<PeriodMinMax> {
 
-        // TODO
-        val x = config.daysBackMinMax.map { daysBack ->
-            {
-                val minMaxPerType = SensorEnum.values().map { type -> type to minMaxSensorValueService.minMax(type, daysBack) }.toMap()
-                val mins = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.minTime), it.value!!.min) else null }.toMap()
-                val maxs = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.maxTime), it.value!!.max) else null }.toMap()
-                PeriodMinMax(daysBack, mins, maxs)
-            }
-        }
-        return x
+        fun createPeriod(daysBack: Int): PeriodMinMax {
 
+            val minMaxPerType = SensorEnum.values().map { type -> type to minMaxSensorValueService.minMax(type, daysBack) }.toMap()
+            val mins = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.minTime), it.value!!.min) else null }.toMap()
+            val maxs = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.maxTime), it.value!!.max) else null }.toMap()
+            return PeriodMinMax(daysBack, mins, maxs)
+        }
+
+        return config.daysBackMinMax.map { daysBack -> createPeriod(daysBack) }
     }
 
     class ServiceDataContainer(val order: List<SensorEnum>,

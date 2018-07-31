@@ -26,7 +26,7 @@ class MinMaxSensorValueServiceTest {
 
     @Test
     fun testEmptyDB() {
-        assertThat(sut.minMax(SensorEnum.PRESSURE)).isNull()
+        assertThat(sut.minMax(SensorEnum.PRESSURE, 5)).isNull()
     }
 
     @Test
@@ -38,7 +38,7 @@ class MinMaxSensorValueServiceTest {
         save(SensorEnum.TEMPERATURE_1, 20f, 5)
         assertThat(repo.count()).isEqualTo(5)
 
-        val result = sut.minMax(SensorEnum.PRESSURE)
+        val result = sut.minMax(SensorEnum.PRESSURE, 999999)
         assertThat(result).isNotNull()
         assertThat(result!!.min).isEqualTo(1f)
         assertThat(result.max).isEqualTo(10f)
