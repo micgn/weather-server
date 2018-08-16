@@ -13,4 +13,6 @@ object Utils {
 
     fun dateTime(epoch: Long) = Instant.ofEpochMilli(epoch).atZone(ZoneId.systemDefault()).toLocalDateTime()!!
     fun dateTime(epoch: Long?) = if (epoch != null) dateTime(epoch) else null
+
+    fun pa2hPa(pascal: Float) = pascal / 100.0f
 }

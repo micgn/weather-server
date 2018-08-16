@@ -5,8 +5,10 @@ import de.mg.weather.server.api.SensorTimeValue
 import de.mg.weather.server.conf.WeatherConfig
 import de.mg.weather.server.model.SensorDataContainer
 import de.mg.weather.server.model.SensorEnum
+import de.mg.weather.server.model.SensorEnum.PRESSURE
 import de.mg.weather.server.model.SensorEnum.values
 import de.mg.weather.server.service.Utils.epoch
+import de.mg.weather.server.service.Utils.pa2hPa
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -31,7 +33,13 @@ class ApiMapperService {
 
             SensorEnum.values().map { type ->
                 val current = sensorDataContainer.sensorsMap[type]!!.current()
-                type to (if (current != null) SensorTimeValue(epoch(current.time), current.value) else null)
+                type to (
+                        if (current != null)
+                            SensorTimeValue(epoch(current.time), if (type != PRESSURE)
+                                current.value
+                            else
+                                pa2hPa(current.value))
+                        else null)
             }.toMap()
 
 
@@ -76,11 +84,25 @@ class ApiMapperService {
 
     private fun minMax(): List<PeriodMinMax> {
 
+        fun convert(type: SensorEnum, value: Float) = if (type != PRESSURE) value else pa2hPa(value)
+
         fun createPeriod(daysBack: Int): PeriodMinMax {
 
-            val minMaxPerType = SensorEnum.values().map { type -> type to minMaxSensorValueService.minMax(type, daysBack) }.toMap()
-            val mins = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.minTime), it.value!!.min) else null }.toMap()
-            val maxs = minMaxPerType.map { it.key to if (it.value != null) SensorTimeValue(epoch(it.value!!.maxTime), it.value!!.max) else null }.toMap()
+            val minMaxPerType = SensorEnum.values().map { type ->
+                type to
+                        minMaxSensorValueService.minMax(type, daysBack)
+            }.toMap()
+
+            val mins = minMaxPerType.map {
+                it.key to
+                        if (it.value != null) SensorTimeValue(epoch(it.value!!.minTime), convert(it.key, it.value!!.min)) else null
+            }.toMap()
+
+            val maxs = minMaxPerType.map {
+                it.key to
+                        if (it.value != null) SensorTimeValue(epoch(it.value!!.maxTime), convert(it.key, it.value!!.max)) else null
+            }.toMap()
+
             return PeriodMinMax(daysBack, mins, maxs)
         }
 
