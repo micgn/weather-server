@@ -31,9 +31,9 @@ class MinMaxSensorValueServiceTest {
 
     @Test
     fun test() {
-        save(SensorEnum.PRESSURE, 1f, 1)
-        save(SensorEnum.PRESSURE, 5f, 2)
-        save(SensorEnum.PRESSURE, 10f, 3)
+        save(SensorEnum.PRESSURE, 100f, 1)
+        save(SensorEnum.PRESSURE, 500f, 2)
+        save(SensorEnum.PRESSURE, 1000f, 3)
         save(SensorEnum.HUMIDITY, 0f, 4)
         save(SensorEnum.TEMPERATURE_1, 20f, 5)
         assertThat(repo.count()).isEqualTo(5)
