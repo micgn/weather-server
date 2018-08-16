@@ -39,4 +39,4 @@ logging:
   level:
     ROOT: INFO
     de.mg.weather.server: INFO
-    org.eclipse.paho.client: DEBUG
+    org.eclipse.paho.client: INFO
