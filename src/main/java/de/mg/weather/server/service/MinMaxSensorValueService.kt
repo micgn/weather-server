@@ -2,8 +2,6 @@ package de.mg.weather.server.service
 
 import de.mg.weather.server.db.SensorValueEntity
 import de.mg.weather.server.model.SensorEnum
-import de.mg.weather.server.model.SensorEnum.PRESSURE
-import de.mg.weather.server.service.Utils.dateTime
 import de.mg.weather.server.service.Utils.epoch
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -25,12 +23,8 @@ open class MinMaxSensorValueService {
         val maxEntity = findMax(type, daysBack) ?: return null
         val minEntity = findMin(type, daysBack) ?: return null
 
-        val min = if (type == PRESSURE) minEntity.getValue() / 100.0f else minEntity.getValue()
-        val max = if (type == PRESSURE) maxEntity.getValue() / 100.0f else maxEntity.getValue()
-
-
-        return MinMax(min, dateTime(minEntity.getId().getTime()),
-                max, dateTime(maxEntity.getId().getTime()))
+        return MinMax(minEntity.getValue(), Utils.dateTime(minEntity.getId().getTime()),
+                maxEntity.getValue(), Utils.dateTime(maxEntity.getId().getTime()))
     }
 
     class MinMax(val min: Float, val minTime: LocalDateTime,
