@@ -26,4 +26,25 @@ class SensorValueIdEntity : Serializable {
         this.time = time
     }
 
+    // equals and hashcode need to be overwritten for composite keys:
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SensorValueIdEntity
+
+        if (type != other.type) return false
+        if (time != other.time) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type?.hashCode() ?: 0
+        result = 31 * result + (time?.hashCode() ?: 0)
+        return result
+    }
+
+
 }
