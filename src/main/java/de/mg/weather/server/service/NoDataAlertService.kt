@@ -40,7 +40,7 @@ class NoDataAlertService {
 
         if (config.alertEmailAddress.isEmpty()) return
 
-        val lastAcceptableTime = Utils.epoch(now().minusMinutes(15))
+        val lastAcceptableTime = Utils.epoch(now().minusMinutes(config.downtimeBeforeAltertMinutes))
 
         val currentSensorState = apiMapperService.currentValuesMap().mapValues {
             it.value != null && it.value!!.time >= lastAcceptableTime

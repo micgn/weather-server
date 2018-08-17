@@ -31,9 +31,9 @@ open class WeatherConfig {
             "p" to SensorEnum.PRESSURE,
             "h" to SensorEnum.HUMIDITY)
 
-    val hoursToShow = 4 * 24
+    val hoursToShow = 7 * 24
 
-    val daysBackMinMax = arrayOf(4, 60, 99999)
+    val daysBackMinMax = arrayOf(7, 60, 99999)
 
     fun showSince() = LocalDateTime.now().minusHours(hoursToShow.toLong())!!
 
@@ -54,6 +54,8 @@ open class WeatherConfig {
         val encodedBytes = Base64.getEncoder().encode(userPw.toByteArray())
         return String(encodedBytes)
     }
+
+    val downtimeBeforeAltertMinutes = 30L
 
 
     @Value("\${alertEmail:}")
