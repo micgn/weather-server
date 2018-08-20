@@ -23,6 +23,9 @@ open class WeatherConfig {
     @Value("\${mqtt.broker.password:}")
     var mqttBrokerPassword: String = ""
 
+    val mqttConnectionTimeout = 500
+    val mqqtKeepAliveInterval = 500
+
     fun isBrokerAuth() = mqttBrokerUser.isNotBlank() && mqttBrokerPassword.isNotBlank()
 
 

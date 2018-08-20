@@ -39,8 +39,8 @@ class MqttListener : MqttCallback {
 
         // properties to maybe fix the connection lost problem
         connOpt.isAutomaticReconnect = true
-        connOpt.connectionTimeout = 300
-        connOpt.keepAliveInterval = 300
+        connOpt.connectionTimeout = config.mqttConnectionTimeout
+        connOpt.keepAliveInterval = config.mqqtKeepAliveInterval
 
         client = MqttClient(config.mqttBrokerUrl, "WeatherServer")
         client.connect(connOpt)
