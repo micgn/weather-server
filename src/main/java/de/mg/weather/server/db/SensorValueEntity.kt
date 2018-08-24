@@ -1,11 +1,9 @@
 package de.mg.weather.server.db
 
-import javax.persistence.Column
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
+import javax.persistence.*
 
 @Entity
-// TODO time index
+@Table(indexes = [Index(columnList = "time")])
 class SensorValueEntity {
 
     @EmbeddedId
