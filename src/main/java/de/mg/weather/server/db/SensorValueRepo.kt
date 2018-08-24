@@ -11,5 +11,8 @@ interface SensorValueRepo : JpaRepository<SensorValueEntity, SensorValueIdEntity
 
     @Query("select s from SensorValueEntity s where s.id.time >= :since")
     fun findSince(@Param("since") since: Long): List<SensorValueEntity>
+
+    @Query("select s from SensorValueEntity s where s.id.time < :before")
+    fun findBefore(@Param("before") before: Long): List<SensorValueEntity>
 }
 
