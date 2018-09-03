@@ -35,7 +35,7 @@ class NoDataAlertService {
     }
 
 
-    @Scheduled(initialDelay = 15 * 60 * 1000, fixedRate = 15 * 60 * 1000 /*every 10 minutes*/)
+    @Scheduled(initialDelay = 5 * 60 * 1000, fixedRate = 30 * 60 * 1000)
     fun run() {
 
         if (config.alertEmailAddress.isEmpty()) return
