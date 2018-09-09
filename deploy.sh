@@ -1,3 +1,3 @@
 #/bin/bash
 
-scp target/weather-server.war install@faktotum2:/home/install/weather
+scp build/libs/weather-server.jar install@faktotum2:/home/install/weather

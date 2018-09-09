@@ -1,0 +1,42 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.2.51"
+    id 'org.springframework.boot' version '1.5.13.RELEASE'
+}
+apply plugin: 'maven'
+apply plugin: 'io.spring.dependency-management'
+
+
+group = 'de.mg.weather'
+version = '1.0-SNAPSHOT'
+description = """weather server"""
+
+jar.archiveName = 'weather-server.jar'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: '1.2.51'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+
+    compile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.3.2'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.5.2'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.13.RELEASE'
+}
