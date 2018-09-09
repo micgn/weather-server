@@ -20,11 +20,18 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
+configurations {
+    angular
+}
 
 dependencies {
+
+    angular group: 'de.mg.weather', name: 'weather-ngclient', version: '1.0.0-SNAPSHOT'
+
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: '1.2.51'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
@@ -41,3 +48,17 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.13.RELEASE'
 }
+
+
+task extractAnngularBinaries(type: Copy) {
+    into file("src/main/resources/static")
+    from zipTree(configurations.angular.singleFile)
+
+    // slightly hacky solution for extraccting below the zip's root directory:
+    eachFile { fcp ->
+        fcp.path = fcp.path.replaceFirst("^weather-ngclient/", '')
+    }
+    includeEmptyDirs false
+}
+
+jar.dependsOn extractAnngularBinaries
