@@ -5,6 +5,7 @@ plugins {
 apply plugin: 'maven'
 apply plugin: 'io.spring.dependency-management'
 
+defaultTasks 'clean', 'build'
 
 group = 'de.mg.weather'
 version = '1.0-SNAPSHOT'
