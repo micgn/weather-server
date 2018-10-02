@@ -1,4 +1,4 @@
-weather-secrets
+weather-secrets.yaml
 .gradle
 build
 *.iml

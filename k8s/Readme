@@ -1,2 +1,0 @@
-seceret to be created:
-kubectl create secret generic weather-secrets --from-file=weather-secrets
