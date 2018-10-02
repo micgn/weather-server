@@ -1,4 +1,4 @@
-server.port: 5555
+server.port: 8080
 
 # to be set from the command line
 mqtt.broker:
