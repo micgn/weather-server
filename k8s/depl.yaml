@@ -63,6 +63,9 @@ spec:
             secretKeyRef:
               name: weather-secrets
               key: BROKER_PW
+        resources:
+          requests:
+            cpu: "25m"
       volumes:
       - name: data
         persistentVolumeClaim:
