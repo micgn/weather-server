@@ -12,6 +12,7 @@ import de.mg.weather.server.service.Utils.pa2hPa
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 
 @Component
 class ApiMapperService {
@@ -120,5 +121,16 @@ class ApiMapperService {
         val dataList = dataList(normalizedValuesPerTime)
 
         return ServiceDataContainer(values().toList(), dataList, minMax())
+    }
+
+    fun activeSensors(): Set<SensorEnum> {
+
+        val lastAcceptableTime = now().minusMinutes(config.downtimeBeforeAltertMinutes)
+
+        var result = SensorEnum.values().toMutableSet()
+        valuesPerTime().filterKeys { it >= lastAcceptableTime }.forEach {
+            it.value.forEach { result.add(it.key) }
+        }
+        return result.toSet()
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime.now
 import javax.annotation.PostConstruct
 
 
@@ -27,7 +26,7 @@ class NoDataAlertService {
     @Autowired
     lateinit var apiMapperService: ApiMapperService
 
-    private var previousSensorState = mapOf<SensorEnum, Boolean>()
+    private var previousSensorState = emptySet<SensorEnum>()
 
     @PostConstruct
     fun init() {
@@ -35,29 +34,25 @@ class NoDataAlertService {
     }
 
 
-    @Scheduled(initialDelay = 5 * 60 * 1000, fixedRate = 30 * 60 * 1000)
+    @Scheduled(initialDelay = 5 * 60 * 1000, fixedRate = 10 * 60 * 1000)
     fun run() {
 
         if (config.alertEmailAddress.isEmpty()) return
 
-        val lastAcceptableTime = Utils.epoch(now().minusMinutes(config.downtimeBeforeAltertMinutes))
+        val currentSensorState = apiMapperService.activeSensors()
 
-        val currentSensorState = apiMapperService.currentValuesMap().mapValues {
-            it.value != null && it.value!!.time >= lastAcceptableTime
-        }
-
-        if (currentSensorState != previousSensorState)
+        if (currentSensorState != previousSensorState) {
             send(currentSensorState)
-
-        previousSensorState = currentSensorState
+            previousSensorState = currentSensorState
+        }
     }
 
 
-    private fun send(currentSensorState: Map<SensorEnum, Boolean>) {
+    private fun send(currentSensorState: Set<SensorEnum>) {
 
         var sensorStateStr = ""
-        currentSensorState.forEach { sensor, ok -> sensorStateStr += "$sensor : $ok\n" }
-        log.warn("new sensor state: $sensorStateStr")
+        currentSensorState.joinToString(separator = ", ")
+        log.warn("active sensors: $sensorStateStr")
 
         val message = SimpleMailMessage()
         message.setTo(config.alertEmailAddress)
